@@ -11,6 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="www-root\answer.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="www-root\index.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -1,32 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using OpenAI_API;
 
 namespace websum {
     public class Gpt3Stuff {
 
         public Gpt3Stuff() {
-            string apipath = @"Z:\openai.txt";
-            OpenAI_API.APIAuthentication.LoadFromPath(apipath);
+            
         }
 
-        public async void Run(string text = "One Two Three One Two") {
+        public async Task<string> Run(string text = "One Two Three One Two") {
 
             // https://github.com/OkGoDoIt/OpenAI-API-dotnet
 
-            var api = new OpenAI_API.OpenAIAPI(engine: Engine.Davinci);
+            string apipath = @"openai.txt";
+            var auth = APIAuthentication.LoadFromPath(filename: apipath);
+            var api = new OpenAIAPI(apiKeys: auth, engine: Engine.Davinci);
+           
 
-            var req = new CompletionRequest(text, temperature: 0.1);
+            var req = new CompletionRequest(text, temperature: 0.5, max_tokens: 10);
 
-            // log req
+            // TODO: log/cache req
 
             var result1 = await api.Completions.CreateCompletionAsync(req);
-            //var result2 = await api.Completions.CreateCompletionAsync(text, temperature: 0.1);
 
-
-            Console.WriteLine(result1.ToString());
-            // should print something starting with "Three"
+            return result1.ToString(); // e.g. should be something starting with "Three"
         }
     }
 }
