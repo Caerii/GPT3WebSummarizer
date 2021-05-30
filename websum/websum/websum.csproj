@@ -10,4 +10,10 @@
     <PackageReference Include="OpenAI" Version="1.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="www-root\index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

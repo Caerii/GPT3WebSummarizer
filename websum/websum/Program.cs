@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 
 using EmbedIO;
+using EmbedIO.Actions;
+using EmbedIO.Files;
 using EmbedIO.WebApi;
 
 
@@ -38,26 +40,24 @@ namespace websum {
         // Create and configure our web server.
         private static WebServer CreateWebServer(string url) {
 
+            // First, we will configure our web server by adding Modules.
 
-            //      TODO
-
-
-
+            string HtmlRootPath = "www-root";
+            bool UseFileCache = false;
 
             var server = new WebServer(o => o
                 .WithUrlPrefix(url)
-                .WithMode(HttpListenerMode.EmbedIO));
-            // First, we will configure our web server by adding Modules.
-            /*
-            .WithLocalSessionManager()
-            .WithWebApi("/api", m => m
-                .WithController<PeopleController>())
-            .WithModule(new WebSocketChatModule("/chat"))
-            .WithModule(new WebSocketTerminalModule("/terminal"))
-            .WithStaticFolder("/", HtmlRootPath, true, m => m
-                .WithContentCaching(UseFileCache)) // Add static files after other modules to avoid conflicts
-            .WithModule(new ActionModule("/", HttpVerbs.Any, ctx => ctx.SendDataAsync(new { Message = "Error" })));
-            */
+                .WithMode(HttpListenerMode.EmbedIO))
+                .WithLocalSessionManager()
+                .WithWebApi("/api", m => m.WithController<WebSummaryController>())
+                // Add static files after other modules to avoid conflicts
+                .WithStaticFolder("/", HtmlRootPath, true, m => m.WithContentCaching(UseFileCache)) 
+
+                .WithModule(new ActionModule("/", HttpVerbs.Any, ctx => ctx.SendDataAsync(new { Message = "Error" })));
+            
+            // other examples
+            //.WithModule(new WebSocketChatModule("/chat"))
+            //.WithModule(new WebSocketTerminalModule("/terminal"))
 
             // Listen for state changes.
             //server.StateChanged += (s, e) => $"WebServer New State - {e.NewState}".Info();
