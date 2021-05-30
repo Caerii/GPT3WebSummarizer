@@ -31,13 +31,15 @@ namespace websum {
         // show a web page with the response
         // found at /api/page/mitochondria
         [Route(HttpVerbs.Get, "/page/{word}")]
-        public string SumPage(string word) {
+        public async void SumPage(string word) {
             var webpage = new WebTemplater().GetPage("answer", "Summary", $"this is a summary of {word}"); ;
 
-            // TODO: doesn't work, need to write to HttpContext.Response i guess
-            HttpContext.Response.ContentType = "text/html"; 
-            HttpContext.Response.ContentEncoding = Encoding.UTF8;
-            return webpage;
+            // TODO: doesn't work
+            //HttpContext.Response.ContentType = "text/html"; 
+            //HttpContext.Response.ContentEncoding = Encoding.UTF8;
+
+            await HttpContext.SendStringAsync(webpage, "text/html", Encoding.UTF8);
+            //return webpage;
             
         }
     }
