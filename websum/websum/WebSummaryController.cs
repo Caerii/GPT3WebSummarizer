@@ -21,26 +21,36 @@ namespace websum {
             return $"Summary of {word}: ";
         }
 
-
+        // found at /api/gpt/mitochondria
         [Route(HttpVerbs.Get, "/gpt/{word}")]
-        public async Task<string> Gpt(string word) {
+        public async Task<string[]> Gpt(string word) {
             var result = await new Gpt3Stuff().Run(word);
-            return $"Gpt completiton of {word}: {result}";
+            //return $"Gpt completiton of {word}: {result}";
+            return new string[] { $"{word}{result}" }; // json-ish
+            //await HttpContext.SendStringAsync($"{word}{result}", "text/plain", Encoding.UTF8);
         }
 
+
+        // TODO: fix crash
         // show a web page with the response
-        // found at /api/page/mitochondria
+        // found at /api/page/synchrotron
         [Route(HttpVerbs.Get, "/page/{word}")]
         public async void SumPage(string word) {
-            var webpage = new WebTemplater().GetPage("answer", "Summary", $"this is a summary of {word}"); ;
 
-            // TODO: doesn't work
-            //HttpContext.Response.ContentType = "text/html"; 
-            //HttpContext.Response.ContentEncoding = Encoding.UTF8;
+            var result = await new Gpt3Stuff().Run(word);
+            var webpage = new WebTemplater().GetPage("answer", "{word}", $"this is a summary of {word}:<br/>{result}"); ;
 
+            //error: Cannot access a disposed object
             await HttpContext.SendStringAsync(webpage, "text/html", Encoding.UTF8);
-            //return webpage;
-            
+        }
+
+
+        // show a web page with a test response
+        // found at /api/testpage/synchrotron
+        [Route(HttpVerbs.Get, "/testpage/{word}")]
+        public async void TestPage(string word) {
+            var webpage = new WebTemplater().GetPage("test page", "Summary", $"this is a test page about {word}"); ;
+            await HttpContext.SendStringAsync(webpage, "text/html", Encoding.UTF8);
         }
     }
 }
